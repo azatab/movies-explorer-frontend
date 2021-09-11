@@ -1,0 +1,45 @@
+.promo {
+  position: relative;
+  background: #073042;
+  padding: 75px 70px 50px;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 
+    "promo__info promo__logo"
+    "promo__button promo__logo";
+}
+
+.promo__info {
+  grid-area: promo__info;
+}
+
+.promo__logo {
+  grid-area: promo__logo;
+  width: 100%;
+  max-width: 310px;
+  height: auto;
+  object-fit: contain;
+}
+
+.promo__title {
+  margin: 0;
+  padding: 0;
+  font-size: 50px;
+  line-height: 1.16;
+  font-weight: normal;
+  max-width: 640px;
+  width: 100%;
+}
+
+.promo__description {
+  margin: 0;
+  padding: 0;
+  padding-top: 36px;
+  max-width: 310px;
+  width: 100%;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: normal;
+  opacity: 0.5;
+}

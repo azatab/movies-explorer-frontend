@@ -1,0 +1,43 @@
+.checkbox {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.checkbox:hover {
+  transition: opacity 0.2s ease;
+  opacity: 0.6;
+}
+
+.checkbox__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.checkbox__text {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 400;
+  
+}
+
+.checkbox__text::before {
+  display: inline-block;
+  vertical-align: middle;
+  float: left;
+  width: 36px;
+  height: 20px;
+  margin-right: 14px;
+  content: '';
+  background: no-repeat center url('../../images/checkbox-inactive.svg');
+}
+
+.checkbox__input:checked + .checkbox__text::before {
+  background: no-repeat url('../../images/checkbox-active.svg');
+}
