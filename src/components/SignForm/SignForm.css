@@ -102,3 +102,9 @@
   transition: opacity 0.2s ease-in;
   opacity: .7;
 }
+
+@media screen and (max-width: 768px) {
+  .sign {
+    padding: 232px 0;
+  }
+}

@@ -92,3 +92,17 @@
 .profile__button_logout {
   color: #EE3465;
 }
+
+@media screen and (max-width: 768px) {
+  .profile {
+    padding: 236px 0 269px;
+  }
+
+  .profile__form {
+    padding-top: 79px;
+  }
+
+  .profile__button_edit {
+    margin-top: 193px;
+  }
+}

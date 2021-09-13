@@ -7,3 +7,11 @@
   gap: 32px;
   list-style-type: none;
 }
+
+@media screen and (max-width: 768px) {
+  .movies-cardlist {
+    padding: 70px 30px 30px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 35px 24px;
+  }
+}

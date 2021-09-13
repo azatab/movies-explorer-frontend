@@ -23,7 +23,7 @@ const location = useLocation();
       {props.loggedIn && (
         <>
           <Navigation />
-          <Link to='/profile' className="header__link header__link_profile">
+          <Link to='/profile' className={`header__link header__link_profile ${location.pathname === '/' ? 'header__link_profile-tiber' : ''}`}>
             Аккаунт
           </Link>
         </>

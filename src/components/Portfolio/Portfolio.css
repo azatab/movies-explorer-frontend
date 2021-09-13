@@ -23,7 +23,7 @@
 }
 
 .portfopio__list-item:last-child {
-  margin-bottom: 15px;
+  margin-bottom: 0;
 }
 
 .portfolio__link {
@@ -31,9 +31,9 @@
   justify-content: space-between;
   text-decoration: none;
   color: #fff;
-  font-size: 30;
+  font-size: 30px;
   line-height: 1.7;
-  font-weight: normal;
+  font-weight: 400;
   padding-bottom: 19px;
   letter-spacing: -0.04em;
 }
@@ -47,4 +47,15 @@
 .portfolio__link:hover {
   transition: opacity 0.2s ease-in;
   opacity: .7;
+}
+
+@media screen and (max-width: 768px) {
+  .portfolio {
+    padding-bottom: 0;
+  }
+
+  .portfolio__link {
+    font-size: 28px;
+    line-height: 1.8;
+  }
 }

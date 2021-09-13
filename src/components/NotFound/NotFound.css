@@ -32,3 +32,9 @@
   transition: opacity .2s ease-in;
   opacity: .7;
 }
+
+@media screen and (max-width: 768px) {
+  .page404 {
+    padding: 408px 0 222px;
+  }
+}

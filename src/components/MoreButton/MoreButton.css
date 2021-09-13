@@ -23,5 +23,5 @@
 
 .more-button__btn:hover {
   transition: opacity 0.2s ease-in;
-  opacity: 0.6;
+  opacity: 0.8;
 }

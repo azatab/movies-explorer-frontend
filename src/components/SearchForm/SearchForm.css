@@ -63,3 +63,25 @@
   margin: 69px 0 0;
   border: 0;
 }
+
+@media screen and (max-width: 768px) {
+  .search-form {
+    padding: 80px 30px 10px;
+  }
+
+  .search-form__form {
+    padding-right: 20px;
+  }
+  
+  .search-form__search {
+    margin-right: 19px;
+  }
+
+  .search-form__button {
+    margin-right: 19px;
+  }
+
+  .search-form__line {
+    margin-top: 109px;
+  }
+}
