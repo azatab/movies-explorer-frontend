@@ -15,6 +15,7 @@ const SearchForm = () => {
             required
             minLength="2"
             maxLength="40"
+            size="1"
           />
           <button className="search-form__button" type="submit">
             Найти

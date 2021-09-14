@@ -24,6 +24,7 @@
 
 .portfopio__list-item:last-child {
   margin-bottom: 0;
+  border-bottom: none;
 }
 
 .portfolio__link {
@@ -57,5 +58,25 @@
   .portfolio__link {
     font-size: 28px;
     line-height: 1.8;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .portfolio__list {
+    margin: 40px 0 0;
+  }
+
+  .portfolio__title {
+    font-size: 14px;
+    line-height: 1.43;
+  }
+
+  .portfolio__link {
+    font-size: 18px;
+    line-height: 1.56;
+  }
+
+  .portfolio__link-image {
+    max-width: 14px;
   }
 }

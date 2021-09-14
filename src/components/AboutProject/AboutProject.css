@@ -66,3 +66,40 @@
     padding-top: 93px;
   }
 }
+
+@media screen and (max-width: 375px) {
+  .about-project {
+    padding-top: 60px;
+  }
+
+  .about-project__info {
+    flex-direction: column;
+  }
+
+  .about-project__bio {
+    margin-bottom: 56px;
+  }
+
+  .about-project__bio-title {
+    font-size: 18px;
+  }
+
+  .about-project__bio-text {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .about-project__timeline {
+    padding-top: 4px;
+    grid-template-columns: 1fr 1.84fr;
+    font-size: 11px;
+  }
+
+  .about-project__timeline-green {
+    padding: 11px 0;
+  }
+
+  .about-project__timeline-grey {
+    padding: 11px 0;
+  }
+}

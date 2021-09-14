@@ -11,7 +11,7 @@ const SignForm = (props) => {
     <section className="sign">
       <Logo />
       <h2 className="sign__title">{props.title}</h2>
-      <form>
+      <form className="sign__form">
         <label className={props.regForm ? "sign__label" : "sign__label sign__label_inactive"} htmlFor="name">
           Имя
           <input 

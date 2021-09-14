@@ -6,8 +6,6 @@ import AboutMe from '../AboutMe/AboutMe';
 import Section from '../Section/Section';
 import Portfolio from '../Portfolio/Portfolio';
 
-import './Main.css';
-
 const Main = () => {
   return (
     <main className="main">

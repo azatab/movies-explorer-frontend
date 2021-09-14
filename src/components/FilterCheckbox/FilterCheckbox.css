@@ -30,7 +30,7 @@
 .checkbox__text::before {
   display: inline-block;
   vertical-align: middle;
-  float: left;
+  
   width: 36px;
   height: 20px;
   margin-right: 14px;
@@ -40,4 +40,21 @@
 
 .checkbox__input:checked + .checkbox__text::before {
   background: no-repeat url('../../images/checkbox-active.svg');
+}
+
+@media screen and (max-width: 320px) {
+  .checkbox {
+    justify-content: center;
+    width: max-content;
+    padding: 0;
+  }
+
+  .checkbox__text {
+    font-size: 11px;
+    line-height: 1.64;
+  }
+
+  .checkbox__text::before {
+    margin-right: 13px;
+  }
 }

@@ -64,3 +64,34 @@
     padding: 79px 30px 0;
   }
 }
+
+@media screen and (max-width: 420px) {
+  .footer {
+    padding: 79px 10px 10px;
+  }
+
+  .footer__title {
+    font-size: 12px;
+  }
+
+  .footer__columns {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 30px 0 0;
+  }
+
+  .footer__column-links {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .footer__column-item {
+    margin: 0 0 12px;
+    text-align: center;
+  }
+
+  .footer__copyright {
+    margin-top: 18px;
+  }
+}

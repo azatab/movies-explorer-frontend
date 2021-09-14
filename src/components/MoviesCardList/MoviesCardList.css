@@ -6,6 +6,7 @@
   grid-auto-rows: 1fr;
   gap: 32px;
   list-style-type: none;
+  align-self: center;
 }
 
 @media screen and (max-width: 768px) {
@@ -13,5 +14,20 @@
     padding: 70px 30px 30px;
     grid-template-columns: repeat(2, 1fr);
     gap: 35px 24px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .movies-cardlist {
+    grid-template-columns: 1fr;
+    padding: 70px 20px 30px;
+    gap: 26px 0;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .movies-cardlist {
+    padding: 40px 10px 30px;
+    gap: 16px 0;
   }
 }

@@ -29,3 +29,13 @@
   transition: opacity 0.2s ease-in;
   opacity: .7;
 }
+
+@media screen and (max-width: 320px) {
+  .socials {
+    margin: 40px 0 69px;
+  }
+
+  .socials__list-item {
+    margin-right: 26px;
+  }
+}

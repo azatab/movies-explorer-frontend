@@ -93,3 +93,19 @@
     max-height: 190px;
   }
 }
+
+@media screen and (max-width: 320px) {
+  .movies-card {
+    grid-auto-rows: min-content 168px min-content;
+  }
+
+  .movies-card__title {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .movies-card__duration {
+    font-size: 10px;
+    line-height: 1.8;
+  }
+}

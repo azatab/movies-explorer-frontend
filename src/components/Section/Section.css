@@ -25,3 +25,26 @@
     padding: 90px 50px;
   }
 }
+
+@media screen and (max-width: 320px) {
+  .section {
+    padding: 70px 14px;
+  }
+
+  .section_theme_light {
+    padding: 70px 18px;
+  }
+
+  .section__title {
+    padding-bottom: 28px;
+    font-size: 18px;
+  }
+
+  .section_theme_light {
+    background: none;
+  }
+
+  .section__title_theme_light {
+    border-bottom: 1px solid #000;
+  }
+}

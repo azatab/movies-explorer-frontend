@@ -6,6 +6,15 @@ const Navigation = (props) => {
   const location = useLocation();
   const [isBurgerMenu, setIsBurgerMenu] = React.useState(false);
 
+  const handleEscClose = (e) => {
+    if (e.key === 'Escape') setIsBurgerMenu(false);
+  }
+
+  React.useEffect(() => {
+    if (isBurgerMenu) document.addEventListener('keydown', handleEscClose);
+    else document.removeEventListener('keydown', handleEscClose);
+  }, [isBurgerMenu]);
+
   const showBurgerMenu = () => {
     setIsBurgerMenu(true);
   }
