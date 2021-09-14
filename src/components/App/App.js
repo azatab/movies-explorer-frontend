@@ -13,7 +13,7 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 
 const App = () => {
-  const loggedIn =true;
+  const loggedIn = true;
 
   return (
     <div className="App">
@@ -23,15 +23,15 @@ const App = () => {
         </Route>
         
         <Switch>
-          <Route path="/movies">
+          <Route exact path="/movies">
             <Movies />
           </Route>
 
-          <Route path="/saved-movies">
+          <Route exact path="/saved-movies">
             <SavedMovies />
           </Route>
 
-          <Route path="/profile">
+          <Route exact path="/profile">
             <Profile />
           </Route>
 
