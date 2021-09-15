@@ -53,7 +53,7 @@
 .navigation_logged {
   display: flex;
   justify-content: space-between;
-  width: calc((100% +38px) / 2 + 106px);
+  width: calc((100% + 38px) / 2 + 106px);
 }
 
 .navigation__movie {
@@ -94,9 +94,11 @@
   position: fixed;
   top: 0;
   right: 0;
+  left: 0;
+  bottom: 0;
   height: 100%;
-  width: 520px;
-  background: #202020;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
   z-index: 11;
   display: flex;
   justify-content: flex-end;
@@ -106,8 +108,9 @@
 .burger-menu__container {
   display: flex;
   flex-direction: column;
+  background: #202020;
   height: 100%;
-  width: 100%;
+  width: 67.7%;
 }
 
 .burger-menu__btn {
@@ -173,7 +176,7 @@
     height: 43px;
   }
 
-  .burger-menu {
+  .burger-menu__container {
     width: 100%;
   }
 

@@ -4,8 +4,8 @@
   padding: 18px 0;
   background: #222;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
-  max-width: 360px;
-  width: 100%;
+  min-width: 360px;
+  
   border-radius: 6px;
   
   grid-auto-rows: min-content 200px min-content;
@@ -55,8 +55,8 @@
 .movies-card__image {
   
   width: 100%;
-  max-height: 200px;
-  object-fit: cover;
+  height: 200px;
+  object-fit: contain;
 }
 
 .movies-card__button {
@@ -84,9 +84,10 @@
   background: url(../../images/unsave_btn.png);
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 884px) {
   .movies-card {
     grid-auto-rows: min-content 190px min-content;
+    min-width: 342px;
   }
 
   .movies-card__image {
@@ -97,6 +98,7 @@
 @media screen and (max-width: 320px) {
   .movies-card {
     grid-auto-rows: min-content 168px min-content;
+    min-width: 300px;
   }
 
   .movies-card__title {

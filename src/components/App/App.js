@@ -13,7 +13,7 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 
 const App = () => {
-  const loggedIn = false;
+  const loggedIn = true;
 
   return (
     <div className="App">
