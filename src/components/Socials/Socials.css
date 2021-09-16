@@ -1,0 +1,41 @@
+.socials {
+  margin: 100px 0;
+}
+
+.socials__list {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+}
+
+.socials__list-item {
+  list-style: none;
+  margin-right: 20px;
+}
+
+.socials__list-item:last-child {
+  margin-right: 0;
+}
+
+.socials__link {
+  text-decoration: none;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.socials__link:hover {
+  transition: opacity 0.2s ease-in;
+  opacity: .7;
+}
+
+@media screen and (max-width: 320px) {
+  .socials {
+    margin: 40px 0 69px;
+  }
+
+  .socials__list-item {
+    margin-right: 26px;
+  }
+}

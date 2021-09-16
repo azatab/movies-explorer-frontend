@@ -1,0 +1,10 @@
+.logo-link {
+  display: flex;
+  max-width: max-content;
+  max-height: max-content;
+}
+
+.logo-link:hover {
+  transition: opacity 0.2s ease-in;
+  opacity: 0.2;
+}

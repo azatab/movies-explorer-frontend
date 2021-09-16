@@ -1,0 +1,30 @@
+.navtab__button {
+  margin: 146px 0 25px;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+  max-width: max-content;
+  box-sizing: border-box;
+  font-size: 12px;
+  line-height: 1.33;
+  font-weight: normal;
+}
+
+.navtab__button:hover {
+  transition: opacity 0.2s ease-in;
+  opacity: 0.6;
+}
+
+@media screen and (max-width: 768px) {
+  .navtab__button {
+    margin: 92px 0 10px 
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .navtab__button {
+    margin: 80px 0 0; 
+  }
+}

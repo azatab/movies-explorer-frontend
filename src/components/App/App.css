@@ -1,0 +1,19 @@
+.App {
+  width: 100vw;
+  background-color: #202020;
+  height: 100vw;
+}
+
+.App-container {
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  background-color: #202020;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  color: #fff;
+}
