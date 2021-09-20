@@ -1,7 +1,12 @@
 import React from "react";
 import SignForm from "../SignForm/SignForm";
 
-const Register = () => {
+const Register = ({ handleRegister, errorMsg, setErrorMsg }) => {
+  const handleSubmit = (values) => {
+    const {name, email, password} = values;
+    handleRegister(name, email, password);
+  }
+
   return (
     <SignForm 
       title="Добро пожаловать!"
@@ -9,6 +14,9 @@ const Register = () => {
       text="Уже зарегистрированы?"
       submitText="Зарегистрироваться"
       regForm
+      onSubmit = {handleSubmit}
+      errorMsg = {errorMsg}
+      setErrorMsg = {setErrorMsg}
     />
   );
 }
