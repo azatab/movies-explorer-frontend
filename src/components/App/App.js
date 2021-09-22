@@ -98,9 +98,10 @@ const App = () => {
         .then(([user, savedItems, items]) => {
           setCurrentUser(user);
           let newItems = [];
-          savedItems.forEach(el => {
-            newItems = items.map(i => (i.id === el.movieId ? Object.assign(i, { saved: true }) : i ))
-          })
+          savedItems.length > 0 ?
+            savedItems.forEach(el => {
+              newItems = items.map(i => (i.id === el.movieId ? Object.assign(i, { saved: true }) : i ))
+            }) : newItems = items
                   
           localStorage.setItem('movies', JSON.stringify(newItems));
           localStorage.setItem('moviesSaved', JSON.stringify(savedItems));
