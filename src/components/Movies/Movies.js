@@ -7,15 +7,21 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import MoreButton from "../MoreButton/MoreButton";
 
 
-const Movies = () => {
-  const isLoading = false;
-  
+const Movies = (props) => {
+    
   return (
     <main className="movies">
-      <SearchForm />
-      {isLoading && <Preloader />}
-      <MoviesCardList />
-      <MoreButton>Ещё</MoreButton>
+      <SearchForm 
+        handleSearch = {props.handleSearch}
+      />
+      {props.preloader && <Preloader />}
+      <MoviesCardList 
+        moviesToRender = {props.moviesToRender}
+        searchMovieError = {props.searchMovieError}
+        errorMsg = {props.errorMsg}
+        onSave = {props.onSave}
+      />
+      {props.moviesFound.length > props.moviesToRender.length && <MoreButton onClick = {props.moreMovies}>Ещё</MoreButton>}
     </main>
   );
 }

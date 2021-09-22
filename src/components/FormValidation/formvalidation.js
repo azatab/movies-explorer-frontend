@@ -19,7 +19,6 @@ export default function FormValidation () {
       setValues(newValues);
       setErrors(newErrors);
       setIsValid(newIsValid);
-      console.log("i am reseting")
     },
     [setValues, setErrors, setIsValid]
   );

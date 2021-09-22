@@ -35,7 +35,7 @@ const SignForm = ({...props}) => {
             minLength="2"
             maxLength="30"
             onChange={handleInputChange}
-            value={values.name || !props.regForm ? " " : ""}
+            value={values.name || " "}
             required
             pattern="[а-яА-Яaa-zA-ZёЁ\- ]{1,}"
           />
