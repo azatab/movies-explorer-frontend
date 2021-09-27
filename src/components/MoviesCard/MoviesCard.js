@@ -6,7 +6,7 @@ const MoviesCard = (props) => {
     props.onSave(props.movie);
   }
   const duration = props.movie.duration;
-  const movieDuration = duration <= 60 
+  const movieDuration = duration < 60 
     ? duration + ' м.'
     : Math.trunc(duration / 60) + ' ч. ' + duration % 60 + ' м.';
   
