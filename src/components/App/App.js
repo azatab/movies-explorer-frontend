@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import * as MainApi from '../../utils/MainApi';
 import * as MoviesApi from '../../utils/MoviesApi';
-
+import { SHORT_MOVIE_DURATION, THREE_COLUMNS_WINDOW_WIDTH, TWO_COLUMNS_WINDOW_WIDTH } from '../../utils/config';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Profile from '../Profile/Profile';
@@ -24,34 +24,62 @@ const App = () => {
   const [movies, setMovies] = React.useState([]);
   const [moviesSaved, setMoviesSaved] = React.useState([]);
   const [moviesFound, setMoviesFound] = React.useState([]);
+  const [moviesShort, setMoviesShort] = React.useState([]);
+  const [moviesSavedShort, setMoviesSavedShort] = React.useState([]);
+  const [showShortMovies, setShowShortMovies] = React.useState(false);
   const [preloader, setPreloader] = React.useState(false);
   const [searchMovieError, setSearchMovieError] = React.useState(false);
   const [amountToDisplay, setAmountToDisplay] = React.useState(() => {
     const windowWidth = window.innerWidth;
-    if (windowWidth > 1279) return 12; 
-    else if (windowWidth > 767) return 8; 
+    if (windowWidth > THREE_COLUMNS_WINDOW_WIDTH) return 3; 
+    else if (windowWidth > TWO_COLUMNS_WINDOW_WIDTH) return 2; 
     else return 5; 
   });
   const [amountToAdd, setAmountToAdd] = React.useState(() => {
     const windowWidth = window.innerWidth;
-    if (windowWidth > 1279) return 3;
-    else if (windowWidth > 767) return 2;
+    if (windowWidth > THREE_COLUMNS_WINDOW_WIDTH) return 3;
+    else if (windowWidth > TWO_COLUMNS_WINDOW_WIDTH) return 2;
     else return 2;
   });
+
+  const history = useHistory();
+  const pathname = useLocation();
 
   React.useEffect(() => {
     window.addEventListener('resize', onScreenResize);
     return () => window.removeEventListener('resize', onScreenResize);
   }, ); 
 
+  const checkToken = React.useCallback(() => {
+    const jwt = localStorage.getItem('jwt');
+    //const movies = localStorage.getItem('movies');
+    const savedMovies = localStorage.getItem('moviesSaved');
+    if (jwt) {
+      setToken(jwt);
+      //if (movies) setMovies(JSON.parse(movies));
+      if (savedMovies) setMoviesSaved(JSON.parse(savedMovies));
+      history.push(pathname.pathname);
+      MainApi.getUserInfo(jwt)
+        .then(user => {
+          setCurrentUser(user);
+          setLoggedIn(true);
+        
+        })
+        .catch(err => console.log(err))
+    }
+  }, [history, pathname.pathname])
+  
+  
+  React.useEffect(() => checkToken(), [checkToken]);
+
   const onScreenResize = () => {
     const windowWidth = window.innerWidth;
     
-    if (windowWidth > 1279) {
-      setAmountToDisplay(12); 
+    if (windowWidth > THREE_COLUMNS_WINDOW_WIDTH) {
+      setAmountToDisplay(3); 
       setAmountToAdd(3);
-    } else if (windowWidth > 767) {
-      setAmountToDisplay(8); 
+    } else if (windowWidth > TWO_COLUMNS_WINDOW_WIDTH) {
+      setAmountToDisplay(2); 
       setAmountToAdd(2);
     } else  {
       setAmountToDisplay(5); 
@@ -60,9 +88,6 @@ const App = () => {
 
     setMovies(moviesFound.slice(0, amountToDisplay));
   }
-
-  const history = useHistory();
-  const pathname = useLocation();
 
   const handleLogOut = () => {
     localStorage.clear();
@@ -105,6 +130,7 @@ const App = () => {
                   
           localStorage.setItem('movies', JSON.stringify(newItems));
           localStorage.setItem('moviesSaved', JSON.stringify(savedItems));
+          
           setMoviesSaved(savedItems);
         })
         .catch(err => console.log(err))
@@ -142,7 +168,7 @@ const App = () => {
   }
   const search = ({ setToSearch, text, shortFilms }) => {
     return setToSearch.filter(el => {
-      return (el.nameRU.toLowerCase().indexOf(text.toLowerCase()) > -1) && (!shortFilms || (shortFilms && el.duration <= 40))
+      return (el.nameRU.toLowerCase().indexOf(text.toLowerCase()) > -1) && (!shortFilms || (shortFilms && el.duration <= SHORT_MOVIE_DURATION))
     });
   }
   
@@ -172,6 +198,7 @@ const App = () => {
   }
 
   const addMovie = (movie) => {
+    setPreloader(true);
     const localMovies = JSON.parse(localStorage.getItem('movies'));
     const localSavedMovies = JSON.parse(localStorage.getItem('moviesSaved'));
 
@@ -192,7 +219,7 @@ const App = () => {
       nameEN: nameEN || "----",
       movieId: id,
     };
-    
+        
     MainApi.addMovie(token, movieToAdd)
       .then(newMovie => {
         const newLocalSavedMovies = [...localSavedMovies, {
@@ -204,50 +231,78 @@ const App = () => {
           duration: newMovie.duration,
           image: newMovie.image,
         }]
-
+        
         localStorage.setItem('moviesSaved', JSON.stringify(newLocalSavedMovies));
         setMoviesSaved(newLocalSavedMovies);
 
-        const newMovies = localMovies.map(movie => (movie.id === newMovie.movieId ? Object.assign(movie, { saved: true }) : movie ))
-        setMovies(newMovies);
+        const newMovies = localMovies.map(movie => (movie.id === newMovie.movieId ? Object.assign(movie, { saved: true }, {_id: newMovie._id}) : movie ))
+        const newMoviesFound = movies.map(movie => (movie.id === newMovie.movieId ? Object.assign(movie, { saved: true }, {_id: newMovie._id}) : movie ))
+        setMovies(newMoviesFound);
         localStorage.setItem('movies', JSON.stringify(newMovies));
       })
       .catch(() => setErrorMsg("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз"))
+      .finally(() => setPreloader(false))
   }
-
+  
   const deleteMovie = (movie) => {
+    setPreloader(true);
     const localSavedMovies = JSON.parse(localStorage.getItem('moviesSaved'));
+    const localMovies = JSON.parse(localStorage.getItem('movies'));
     const id = movie._id;
+            
     MainApi.deleteMovie({ token, id })
-      .then(deletedMovie => {
-        const newLocalSavedMovies = localSavedMovies.filter(movie => (movie.id !== deletedMovie.movieId));
+      .then((deletedMovie) => {
+        
+        const newLocalSavedMovies = localSavedMovies.filter(mov => mov._id !== deletedMovie.message._id);
         localStorage.setItem('moviesSaved', JSON.stringify(newLocalSavedMovies));
-        //const newMoviesSaved = moviesSaved.filter(movie => (movie.id !== deletedMovie.movieId));
-        //setMoviesSaved(newMoviesSaved);
+        
         setMoviesSaved(newLocalSavedMovies);
-        const newMovies = movies.map(movie => (movie.id === deletedMovie.movieId ? Object.assign(movie, { saved: false}) : movie ));
-        setMovies(newMovies);
+                
+        const newMovies = localMovies.map(movie => (movie.id === deletedMovie.message.movieId ? Object.assign(movie, { saved: false}) : movie ));
+        const newMoviesFound = movies.map(movie => (movie.id === deletedMovie.message.movieId ? Object.assign(movie, { saved: false}) : movie ));
+        setMovies(newMoviesFound);
         localStorage.setItem('movies', JSON.stringify(newMovies));
       })
       .catch(() => setErrorMsg("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз"))
+      .finally(() => {
+        setPreloader(false)
+      })
   }
+
+  // React.useEffect(() => {
+  //   if (pathname === '/saved-movies') setMoviesSaved(moviesSaved);
+  // }, [moviesSaved, pathname]);
 
   const handleSave = (movie) => {
     const localSavedMovies = JSON.parse(localStorage.getItem('moviesSaved'));
     const savedMovie = localSavedMovies.filter(mov => mov.id === movie.id)[0];
 
-    if (savedMovie) deleteMovie(movie);
-    else addMovie(movie);
+    savedMovie ? deleteMovie(movie) : addMovie(movie) 
   }
+
+  const filterShortFilms = (set) => {
+    return set.filter(el => el.duration <= SHORT_MOVIE_DURATION);
+  }
+
+  const onRenderShort = ({ saved, shortFilms }) => {
+    if (!shortFilms) {
+      setShowShortMovies(true)
+      saved ? setMoviesSavedShort(filterShortFilms(moviesSaved)) : setMoviesShort(filterShortFilms(moviesFound))
+    } else {
+      setShowShortMovies(false)
+      saved ? setMoviesSavedShort([]) : setMoviesShort([])
+    }
+  }
+
+  React.useEffect(() => {}, [moviesSaved, movies])
 
   return (
     <CurrentUserContext.Provider value = {currentUser}>
       <div className="App">
         <div className="App-container">
-          <Route exact path="/(|movies|saved-movies|profile)">
-            <Header loggedIn = {loggedIn} />
-          </Route>
           
+          {useRouteMatch(['/signin', '/signup']) ? null : <Header loggedIn = {loggedIn} />}
+                    
           <Switch>
             <ProtectedRoute exact path="/movies" loggedIn = {loggedIn}>
               <Movies 
@@ -255,10 +310,11 @@ const App = () => {
                 handleSearch = {searchMovies}
                 searchMovieError = {searchMovieError}
                 errorMsg = {errorMsg}
-                moviesToRender = {movies}
+                moviesToRender = {showShortMovies ? moviesShort : movies}
                 moviesFound = {moviesFound}
                 onSave = {handleSave}
                 moreMovies = {handleMoreMovies}
+                renderShort = {onRenderShort}
               />
             </ProtectedRoute>
 
@@ -267,9 +323,10 @@ const App = () => {
                 preloader = {preloader}
                 handleSearch = {searchMovies}
                 searchMovieError = {searchMovieError}
-                moviesToRender = {moviesSaved}
+                moviesToRender = {showShortMovies? moviesSavedShort : moviesSaved}
                 onSave = {handleSave}
                 errorMsg = {errorMsg}
+                renderShort = {onRenderShort}
               />
             </ProtectedRoute>
 
@@ -303,13 +360,12 @@ const App = () => {
             </Route>
 
             <Route path="*">
-              <NotFound linkBack="/" />
+              <NotFound />
             </Route>
           </Switch>
 
-          <Route exact path="/(|movies|saved-movies)">
-            <Footer />
-            </Route>
+          {useRouteMatch(['/signin', '/signup', '/profile']) ? null : <Footer />}
+                              
         </div>
       </div>
     </CurrentUserContext.Provider>

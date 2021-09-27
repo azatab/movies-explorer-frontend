@@ -10,6 +10,7 @@ const SavedMovies = (props) => {
       <SearchForm 
         handleSearch = {props.handleSearch}
         showSaved = {true}
+        renderShort = {props.renderShort}
       />
       {props.preloader && <Preloader />}
       <MoviesCardList 

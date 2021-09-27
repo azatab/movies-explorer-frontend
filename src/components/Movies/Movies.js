@@ -8,11 +8,12 @@ import MoreButton from "../MoreButton/MoreButton";
 
 
 const Movies = (props) => {
-    
+  
   return (
     <main className="movies">
       <SearchForm 
         handleSearch = {props.handleSearch}
+        renderShort = {props.renderShort}
       />
       {props.preloader && <Preloader />}
       <MoviesCardList 
