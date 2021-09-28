@@ -21,7 +21,8 @@ const SearchForm = (props) => {
 
   const handleShortFilmsClick = ({ checked }) => {
     setShortFilms(checked);
-    props.renderShort({ shortFilms, saved });
+    //props.renderShort({ shortFilms, saved });
+    props.handleSearch({ text, saved, shortFilms : checked });
   }
 
   return (

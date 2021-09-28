@@ -4,7 +4,7 @@ import { Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-rou
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import * as MainApi from '../../utils/MainApi';
 import * as MoviesApi from '../../utils/MoviesApi';
-import { SHORT_MOVIE_DURATION, THREE_COLUMNS_WINDOW_WIDTH, TWO_COLUMNS_WINDOW_WIDTH } from '../../utils/config';
+import { THREE_COLUMNS_WINDOW_WIDTH, TWO_COLUMNS_WINDOW_WIDTH, SHORT_MOVIE_DURATION } from '../../utils/config';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Profile from '../Profile/Profile';
@@ -35,6 +35,7 @@ const App = () => {
     else if (windowWidth > TWO_COLUMNS_WINDOW_WIDTH) return 2; 
     else return 5; 
   });
+
   const [amountToAdd, setAmountToAdd] = React.useState(() => {
     const windowWidth = window.innerWidth;
     if (windowWidth > THREE_COLUMNS_WINDOW_WIDTH) return 3;
@@ -45,32 +46,28 @@ const App = () => {
   const history = useHistory();
   const pathname = useLocation();
 
-  React.useEffect(() => {
-    window.addEventListener('resize', onScreenResize);
-    return () => window.removeEventListener('resize', onScreenResize);
-  }, ); 
-
   const checkToken = React.useCallback(() => {
     const jwt = localStorage.getItem('jwt');
-    //const movies = localStorage.getItem('movies');
+    const foundMovies = (localStorage.getItem('moviesFound'));
+    //console.log(foundMovies);
+    
     const savedMovies = localStorage.getItem('moviesSaved');
     if (jwt) {
       setToken(jwt);
-      //if (movies) setMovies(JSON.parse(movies));
+      if (foundMovies) setMovies(JSON.parse(foundMovies));
       if (savedMovies) setMoviesSaved(JSON.parse(savedMovies));
+      console.log(pathname.pathname)
       history.push(pathname.pathname);
       MainApi.getUserInfo(jwt)
         .then(user => {
           setCurrentUser(user);
           setLoggedIn(true);
-        
         })
         .catch(err => console.log(err))
     }
   }, [history, pathname.pathname])
-  
-  
-  React.useEffect(() => checkToken(), [checkToken]);
+
+  React.useEffect(() => {checkToken()}, [checkToken])
 
   const onScreenResize = () => {
     const windowWidth = window.innerWidth;
@@ -81,7 +78,7 @@ const App = () => {
     } else if (windowWidth > TWO_COLUMNS_WINDOW_WIDTH) {
       setAmountToDisplay(2); 
       setAmountToAdd(2);
-    } else  {
+    } else {
       setAmountToDisplay(5); 
       setAmountToAdd(2);
     }
@@ -89,12 +86,20 @@ const App = () => {
     setMovies(moviesFound.slice(0, amountToDisplay));
   }
 
+  React.useEffect(() => {
+    window.addEventListener('resize', onScreenResize);
+    return () => window.removeEventListener('resize', onScreenResize);
+  }, );
+  
+  React.useEffect(() => checkToken(), [checkToken]);
+
   const handleLogOut = () => {
     localStorage.clear();
     setLoggedIn(false);
     setCurrentUser({});
     setToken("");
     history.push('/');
+    setMovies([]);
   }
 
   const handleProfileEdit = (name, email) => {
@@ -168,7 +173,7 @@ const App = () => {
   }
   const search = ({ setToSearch, text, shortFilms }) => {
     return setToSearch.filter(el => {
-      return (el.nameRU.toLowerCase().indexOf(text.toLowerCase()) > -1) && (!shortFilms || (shortFilms && el.duration <= SHORT_MOVIE_DURATION))
+      return ((text && el.nameRU.toLowerCase().indexOf(text.toLowerCase()) > -1) || !text) && (!shortFilms || (shortFilms && el.duration <= SHORT_MOVIE_DURATION))
     });
   }
   
@@ -186,21 +191,29 @@ const App = () => {
     
     result.length > 0 ? setSearchMovieError(false) : setSearchMovieError(true)
 
-    saved ? setMoviesSaved(result) : setMoviesFound(result);
+    if (saved) {
+      setMoviesSaved(result);
+    } else {
+      setMoviesFound(result); 
+      //setMovies(result);
+      localStorage.setItem('moviesFound', JSON.stringify(result));
+      console.log(result)
+    }
     
     setMovies(result.slice(0, amountToDisplay));    
-    
+    //setMovies(result);
     setTimeout(() => setPreloader(false), 500);
   }
 
-  const handleMoreMovies = () => {
-    setMovies(moviesFound.slice(0, movies.length + amountToAdd));
-  }
+   const handleMoreMovies = () => {
+     setMovies(moviesFound.slice(0, movies.length + amountToAdd));
+   }
 
   const addMovie = (movie) => {
     setPreloader(true);
     const localMovies = JSON.parse(localStorage.getItem('movies'));
     const localSavedMovies = JSON.parse(localStorage.getItem('moviesSaved'));
+    const localFoundMovies = JSON.parse(localStorage.getItem('moviesFound'));
 
     const movieCopy = localMovies.filter(i => i.id === movie.id)[0];
 
@@ -231,14 +244,16 @@ const App = () => {
           duration: newMovie.duration,
           image: newMovie.image,
         }]
-        
+        console.log(newMovie)
         localStorage.setItem('moviesSaved', JSON.stringify(newLocalSavedMovies));
         setMoviesSaved(newLocalSavedMovies);
 
         const newMovies = localMovies.map(movie => (movie.id === newMovie.movieId ? Object.assign(movie, { saved: true }, {_id: newMovie._id}) : movie ))
         const newMoviesFound = movies.map(movie => (movie.id === newMovie.movieId ? Object.assign(movie, { saved: true }, {_id: newMovie._id}) : movie ))
+        const newLocalMoviesFound = localFoundMovies.map(movie => (movie.id === newMovie.movieId ? Object.assign(movie, { saved: true }, {_id: newMovie._id}) : movie ))
         setMovies(newMoviesFound);
         localStorage.setItem('movies', JSON.stringify(newMovies));
+        localStorage.setItem('moviesFound', JSON.stringify(newLocalMoviesFound));
       })
       .catch(() => setErrorMsg("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз"))
       .finally(() => setPreloader(false))
@@ -248,6 +263,7 @@ const App = () => {
     setPreloader(true);
     const localSavedMovies = JSON.parse(localStorage.getItem('moviesSaved'));
     const localMovies = JSON.parse(localStorage.getItem('movies'));
+    const localFoundMovies = JSON.parse(localStorage.getItem('moviesFound'));
     const id = movie._id;
             
     MainApi.deleteMovie({ token, id })
@@ -260,8 +276,10 @@ const App = () => {
                 
         const newMovies = localMovies.map(movie => (movie.id === deletedMovie.message.movieId ? Object.assign(movie, { saved: false}) : movie ));
         const newMoviesFound = movies.map(movie => (movie.id === deletedMovie.message.movieId ? Object.assign(movie, { saved: false}) : movie ));
+        const newLocalMoviesFound = localFoundMovies.map(movie => (movie.id === deletedMovie.message.movieId ? Object.assign(movie, { saved: false}) : movie ));
         setMovies(newMoviesFound);
         localStorage.setItem('movies', JSON.stringify(newMovies));
+        localStorage.setItem('moviesFound', JSON.stringify(newLocalMoviesFound));
       })
       .catch(() => setErrorMsg("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз"))
       .finally(() => {
@@ -285,7 +303,7 @@ const App = () => {
   }
 
   const onRenderShort = ({ saved, shortFilms }) => {
-    if (!shortFilms) {
+    if (shortFilms) {
       setShowShortMovies(true)
       saved ? setMoviesSavedShort(filterShortFilms(moviesSaved)) : setMoviesShort(filterShortFilms(moviesFound))
     } else {
