@@ -138,6 +138,7 @@ const App = () => {
                   
           localStorage.setItem('movies', JSON.stringify(newItemsWithSaved));
           localStorage.setItem('moviesSaved', JSON.stringify(savedItems));
+          localStorage.setItem('moviesFound', JSON.stringify([]));
           
           setMoviesSaved(savedItems);
         })
@@ -175,13 +176,16 @@ const App = () => {
       }) 
   }
   const search = ({ setToSearch, text, shortFilms }) => {
+    console.log(`Text search - ${text}`);
     return setToSearch.filter(el => {
-      return ((text && el.nameRU.toLowerCase().indexOf(text.toLowerCase()) > -1) || !text) && (!shortFilms || (shortFilms && el.duration <= SHORT_MOVIE_DURATION))
+      //return ((text && el.nameRU.toLowerCase().indexOf(text.toLowerCase()) > -1) || !text) 
+      return ((text && el.nameRU.toLowerCase().indexOf(text.toLowerCase()) > -1)) 
+      && (!shortFilms || (shortFilms && el.duration <= SHORT_MOVIE_DURATION))
     });
   }
   
   const searchMovies = ({ text, saved, shortFilms}) => {
-    setPreloader(true);
+    text && setPreloader(true);
     setErrorMsg("");
     setMovies([]);
     setMoviesFound([]);
@@ -192,7 +196,8 @@ const App = () => {
     const setToSearch = saved ? localSavedMovies : localMovies
     const result = search({ setToSearch, text, shortFilms });
     
-    result.length > 0 ? setSearchMovieError(false) : setSearchMovieError(true)
+    console.log(result);
+    result.length > 0 ? setSearchMovieError(false) : text && setSearchMovieError(true)
 
     if (saved) {
       setMoviesSaved(result);
@@ -281,7 +286,10 @@ const App = () => {
         localStorage.setItem('movies', JSON.stringify(newMovies));
         localStorage.setItem('moviesFound', JSON.stringify(newLocalMoviesFound));
       })
-      .catch(() => setErrorMsg("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз"))
+      .catch((err) => {
+        setErrorMsg("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз")
+        console.log(err)
+      })
       .finally(() => {
         setPreloader(false)
       })
@@ -293,7 +301,7 @@ const App = () => {
 
   const handleSave = (movie) => {
     const localSavedMovies = JSON.parse(localStorage.getItem('moviesSaved'));
-    const savedMovie = localSavedMovies.filter(mov => mov.movieId === movie.id)[0];
+    const savedMovie = localSavedMovies.filter(mov => mov.movieId === movie.movieId)[0];
 
     savedMovie ? deleteMovie(savedMovie) : addMovie(movie) 
   }
