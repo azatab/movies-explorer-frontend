@@ -1,13 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import './NotFound.css';
 
-const NotFound = ({ linkBack }) => {
+const NotFound = () => {
+  const history = useHistory();
+  
+  const handleBackClick = () => {
+    
+    history.go(-3);
+  }
   return (
     <main className="page404">
       <h2 className="page404__title">404</h2>
       <p className="page404__text">Страница не найдена</p>
-      <Link to={linkBack} className="page404__link">Назад</Link>
+      <button onClick={handleBackClick} className="page404__link">Назад</button>
     </main>
   );
 }

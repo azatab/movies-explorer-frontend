@@ -26,6 +26,8 @@
   line-height: 1.2;
   font-weight: 400;
   color: #4285F4;
+  border: 0;
+  background: none;
 }
 
 .page404__link:hover {

@@ -3,13 +3,23 @@ import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import Preloader from "../Preloader/Preloader";
 
-const SavedMovies = () => {
-  const isLoading = true;
+const SavedMovies = (props) => {
+  
   return (
     <main className="movies">
-      <SearchForm />
-      {isLoading && <Preloader />}
-      <MoviesCardList showSaved/>
+      <SearchForm 
+        handleSearch = {props.handleSearch}
+        showSaved = {true}
+        renderShort = {props.renderShort}
+      />
+      {props.preloader && <Preloader />}
+      <MoviesCardList 
+        showSaved
+        moviesToRender = {props.moviesToRender}
+        searchMovieError = {props.searchMovieError}
+        errorMsg = {props.errorMsg}
+        onSave = {props.onSave}
+      />
 
     </main>
   );

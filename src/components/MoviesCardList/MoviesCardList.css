@@ -12,7 +12,15 @@
   list-style-type: none;
   
   justify-content: center;
-  
+}
+
+.errorMsg {
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: #FF004C;
+  padding: 10px 0;
 }
 
 @media screen and (max-width: 884px) {
