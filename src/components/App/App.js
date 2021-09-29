@@ -48,15 +48,14 @@ const App = () => {
 
   const checkToken = React.useCallback(() => {
     const jwt = localStorage.getItem('jwt');
-    const foundMovies = (localStorage.getItem('moviesFound'));
-    //console.log(foundMovies);
-    
+    const foundMovies = localStorage.getItem('moviesFound');
+        
     const savedMovies = localStorage.getItem('moviesSaved');
     if (jwt) {
       setToken(jwt);
       if (foundMovies) setMovies(JSON.parse(foundMovies));
       if (savedMovies) setMoviesSaved(JSON.parse(savedMovies));
-      console.log(pathname.pathname)
+      
       history.push(pathname.pathname);
       MainApi.getUserInfo(jwt)
         .then(user => {
@@ -64,7 +63,7 @@ const App = () => {
           setLoggedIn(true);
         })
         .catch(err => console.log(err))
-    }
+    } 
   }, [history, pathname.pathname])
 
   React.useEffect(() => {checkToken()}, [checkToken])
@@ -100,6 +99,8 @@ const App = () => {
     setToken("");
     history.push('/');
     setMovies([]);
+    setMoviesFound([]);
+    setMoviesSaved([]);
   }
 
   const handleProfileEdit = (name, email) => {
@@ -127,18 +128,20 @@ const App = () => {
       Promise.all([MainApi.getUserInfo(token), MainApi.getSavedMovies(token), MoviesApi.getMovies()])
         .then(([user, savedItems, items]) => {
           setCurrentUser(user);
-          let newItems = [];
+          
+          const newItems = items.map(i => Object.assign(i, { movieId: i.id }));
+          let newItemsWithSaved = [];
           savedItems.length > 0 ?
             savedItems.forEach(el => {
-              newItems = items.map(i => (i.id === el.movieId ? Object.assign(i, { saved: true }) : i ))
-            }) : newItems = items
+              newItemsWithSaved = newItems.map(i => (i.id === el.movieId ? Object.assign(i, { saved: true }) : i ))
+            }) : newItemsWithSaved = newItems
                   
-          localStorage.setItem('movies', JSON.stringify(newItems));
+          localStorage.setItem('movies', JSON.stringify(newItemsWithSaved));
           localStorage.setItem('moviesSaved', JSON.stringify(savedItems));
           
           setMoviesSaved(savedItems);
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log(`Promise error - ${err}`))
     }
   }, [loggedIn, token])
 
@@ -195,13 +198,10 @@ const App = () => {
       setMoviesSaved(result);
     } else {
       setMoviesFound(result); 
-      //setMovies(result);
       localStorage.setItem('moviesFound', JSON.stringify(result));
-      console.log(result)
     }
-    
     setMovies(result.slice(0, amountToDisplay));    
-    //setMovies(result);
+    
     setTimeout(() => setPreloader(false), 500);
   }
 
@@ -244,7 +244,7 @@ const App = () => {
           duration: newMovie.duration,
           image: newMovie.image,
         }]
-        console.log(newMovie)
+        
         localStorage.setItem('moviesSaved', JSON.stringify(newLocalSavedMovies));
         setMoviesSaved(newLocalSavedMovies);
 
@@ -287,15 +287,15 @@ const App = () => {
       })
   }
 
-  // React.useEffect(() => {
-  //   if (pathname === '/saved-movies') setMoviesSaved(moviesSaved);
-  // }, [moviesSaved, pathname]);
+   React.useEffect(() => {
+     if (pathname === '/saved-movies') setMoviesSaved(moviesSaved);
+   }, [moviesSaved, pathname]);
 
   const handleSave = (movie) => {
     const localSavedMovies = JSON.parse(localStorage.getItem('moviesSaved'));
-    const savedMovie = localSavedMovies.filter(mov => mov.id === movie.id)[0];
+    const savedMovie = localSavedMovies.filter(mov => mov.movieId === movie.id)[0];
 
-    savedMovie ? deleteMovie(movie) : addMovie(movie) 
+    savedMovie ? deleteMovie(savedMovie) : addMovie(movie) 
   }
 
   const filterShortFilms = (set) => {
